@@ -164,4 +164,24 @@ return "Nueva Tarea";
    throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// Convierte bool a ancho del menú (abierto/cerrado)
+  /// </summary>
+    public class MenuWidthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+   if (value is bool isOpen)
+            {
+       return isOpen ? 250.0 : 70.0;
+        }
+   return 250.0;
+  }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+ {
+            throw new NotImplementedException();
+        }
+    }
 }

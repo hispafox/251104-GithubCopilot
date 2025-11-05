@@ -51,6 +51,7 @@ namespace DemoWpf
                     services.AddTransient<EtiquetaManagerViewModel>();
 
                     // ========== Nuevos ViewModels para sistema de listas de tareas ==========
+                    services.AddSingleton<MainViewModel>();
                     services.AddTransient<TaskListManagementViewModel>();
                     services.AddTransient<TaskListDialogViewModel>();
                     services.AddTransient<TaskItemDialogViewModel>();
