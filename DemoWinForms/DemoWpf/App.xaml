@@ -1,9 +1,19 @@
-﻿<Application x:Class="DemoWpf.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:DemoWpf"
-             StartupUri="MainWindow.xaml">
+﻿<Application
+    x:Class="DemoWpf.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:DemoWpf"
+    xmlns:converters="clr-namespace:DemoWpf.Converters">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/LightTheme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:EditModeTitleConverter x:Key="EditModeTitleConverter" />
+            <converters:EditModeButtonConverter x:Key="EditModeButtonConverter" />
+            <converters:EtiquetasVisibilityConverter x:Key="EtiquetasVisibilityConverter" />
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
