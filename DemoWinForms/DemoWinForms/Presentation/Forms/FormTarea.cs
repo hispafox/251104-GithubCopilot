@@ -30,51 +30,51 @@ public partial class FormTarea : Form
     {
         try
         {
-  InicializarCombos();
-          ActualizarContadores();
+            InicializarCombos();
+     ActualizarContadores();
 
-          if (_esEdicion && _tareaId.HasValue)
+     if (_esEdicion && _tareaId.HasValue)
             {
-        Text = "?? Editar Tarea";
-     CargarDatosTarea();
-            }
-      else
-         {
-    Text = "? Nueva Tarea";
-         EstablecerValoresPorDefecto();
-     }
-  }
+      Text = "Editar Tarea";
+        CargarDatosTarea();
+    }
+   else
+            {
+       Text = "Nueva Tarea";
+  EstablecerValoresPorDefecto();
+         }
+      }
         catch (Exception ex)
     {
      _logger.LogError(ex, "Error al cargar formulario de tarea");
-            MessageBox.Show($"Error al cargar el formulario: {ex.Message}", 
-                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-  }
+     MessageBox.Show($"Error al cargar el formulario: {ex.Message}", 
+    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     private void InicializarCombos()
     {
         // Prioridad
-        cboPrioridad.Items.Add(new ComboBoxItem("?? Baja", PrioridadTarea.Baja));
-      cboPrioridad.Items.Add(new ComboBoxItem("?? Media", PrioridadTarea.Media));
-  cboPrioridad.Items.Add(new ComboBoxItem("?? Alta", PrioridadTarea.Alta));
-      cboPrioridad.Items.Add(new ComboBoxItem("?? Crítica", PrioridadTarea.Critica));
+        cboPrioridad.Items.Add(new ComboBoxItem("Baja", PrioridadTarea.Baja));
+        cboPrioridad.Items.Add(new ComboBoxItem("Media", PrioridadTarea.Media));
+        cboPrioridad.Items.Add(new ComboBoxItem("Alta", PrioridadTarea.Alta));
+        cboPrioridad.Items.Add(new ComboBoxItem("Critica", PrioridadTarea.Critica));
         cboPrioridad.DisplayMember = "Text";
         cboPrioridad.ValueMember = "Value";
 
-        // Estado
-        cboEstado.Items.Add(new ComboBoxItem("? Pendiente", EstadoTarea.Pendiente));
-        cboEstado.Items.Add(new ComboBoxItem("?? En Progreso", EstadoTarea.EnProgreso));
-   cboEstado.Items.Add(new ComboBoxItem("? Completada", EstadoTarea.Completada));
-   cboEstado.Items.Add(new ComboBoxItem("? Cancelada", EstadoTarea.Cancelada));
+  // Estado
+    cboEstado.Items.Add(new ComboBoxItem("Pendiente", EstadoTarea.Pendiente));
+        cboEstado.Items.Add(new ComboBoxItem("En Progreso", EstadoTarea.EnProgreso));
+        cboEstado.Items.Add(new ComboBoxItem("Completada", EstadoTarea.Completada));
+        cboEstado.Items.Add(new ComboBoxItem("Cancelada", EstadoTarea.Cancelada));
         cboEstado.DisplayMember = "Text";
         cboEstado.ValueMember = "Value";
 
         // Categoría
         foreach (var categoria in Constants.Categorias.Todas)
-     {
-        cboCategoria.Items.Add(categoria);
-   }
+ {
+            cboCategoria.Items.Add(categoria);
+        }
     }
 
     private void EstablecerValoresPorDefecto()
