@@ -1,0 +1,149 @@
+<UserControl x:Class="DemoWpf.Views.TaskListDetailView"
+   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+xmlns:vm="clr-namespace:DemoWpf.ViewModels"
+     d:DataContext="{d:DesignInstance Type=vm:TaskListViewModel}"
+   mc:Ignorable="d"
+     d:DesignHeight="600" d:DesignWidth="900">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+  <RowDefinition Height="Auto"/>
+   <RowDefinition Height="Auto"/>
+    <RowDefinition Height="*"/>
+       </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+ <Button Content="Nueva Tarea"
+        Command="{Binding CreateTaskCommand}"
+      Padding="15,8"
+    Margin="0,0,5,0"
+Background="#5CB85C"
+     Foreground="White"
+     BorderThickness="0"
+   Cursor="Hand"/>
+    <Button Content="Editar"
+ Command="{Binding EditTaskCommand}"
+   Padding="15,8"
+      Margin="0,0,5,0"
+ Background="#5BC0DE"
+     Foreground="White"
+   BorderThickness="0"
+  Cursor="Hand"/>
+    <Button Content="Eliminar"
+    Command="{Binding DeleteTaskCommand}"
+Padding="15,8"
+  Margin="0,0,5,0"
+Background="#D9534F"
+      Foreground="White"
+BorderThickness="0"
+    Cursor="Hand"/>
+       <Button Content="Completar"
+Command="{Binding CompleteTaskCommand}"
+Padding="15,8"
+      Margin="0,0,5,0"
+   Background="#F0AD4E"
+  Foreground="White"
+  BorderThickness="0"
+ Cursor="Hand"/>
+<Button Content="Mover a Otra Lista"
+ Command="{Binding MoveTaskCommand}"
+ Padding="15,8"
+     Margin="0,0,5,0"
+Background="#9B59B6"
+    Foreground="White"
+BorderThickness="0"
+    Cursor="Hand"/>
+ <Button Content="Refrescar"
+  Command="{Binding LoadTasksCommand}"
+     Padding="15,8"
+     Background="#95A5A6"
+     Foreground="White"
+BorderThickness="0"
+Cursor="Hand"/>
+</StackPanel>
+
+        <Expander Grid.Row="1" 
+      Header="Filtros y Busqueda" 
+IsExpanded="True"
+    Margin="0,0,0,15">
+<Grid Margin="10">
+ <Grid.ColumnDefinitions>
+  <ColumnDefinition Width="*"/>
+       <ColumnDefinition Width="*"/>
+<ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+   <Grid.RowDefinitions>
+    <RowDefinition Height="Auto"/>
+     <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+       <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,10,0">
+         <TextBlock Text="Busqueda" FontWeight="SemiBold" Margin="0,0,0,5"/>
+       <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+       Padding="8"/>
+      </StackPanel>
+
+<StackPanel Grid.Column="1" Grid.Row="0" Margin="10,0">
+        <TextBlock Text="Ordenar por" FontWeight="SemiBold" Margin="0,0,0,5"/>
+        <ComboBox SelectedValue="{Binding SortBy}" Padding="8">
+<ComboBoxItem Content="Fecha" IsSelected="True"/>
+    <ComboBoxItem Content="Prioridad"/>
+    <ComboBoxItem Content="Estado"/>
+    <ComboBoxItem Content="Titulo"/>
+      <ComboBoxItem Content="Vencimiento"/>
+   </ComboBox>
+  </StackPanel>
+
+       <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,10,10,0">
+   <TextBlock Text="Filtrar por Estado" FontWeight="SemiBold" Margin="0,0,0,5"/>
+<StackPanel>
+<CheckBox Content="Pendientes" IsChecked="{Binding FilterPending}" Margin="5"/>
+   <CheckBox Content="En Progreso" IsChecked="{Binding FilterInProgress}" Margin="5"/>
+       <CheckBox Content="Completadas" IsChecked="{Binding FilterCompleted}" Margin="5"/>
+        <CheckBox Content="Solo Vencidas" IsChecked="{Binding ShowOverdueOnly}" Margin="5" Foreground="Red"/>
+       </StackPanel>
+  </StackPanel>
+
+ <StackPanel Grid.Column="1" Grid.Row="1" Margin="10,10,0,0">
+        <TextBlock Text="Filtrar por Prioridad" FontWeight="SemiBold" Margin="0,0,0,5"/>
+   <ComboBox SelectedValue="{Binding SelectedPriority}" Padding="8">
+<ComboBoxItem Content="Todas" IsSelected="True"/>
+   <ComboBoxItem Content="Alta"/>
+     <ComboBoxItem Content="Media"/>
+ <ComboBoxItem Content="Baja"/>
+        </ComboBox>
+ </StackPanel>
+
+   <Button Grid.Column="2" Grid.Row="1"
+    Content="Limpiar Filtros"
+  Command="{Binding ClearFiltersCommand}"
+         Padding="15,8"
+    VerticalAlignment="Bottom"
+Background="#6C757D"
+      Foreground="White"
+  BorderThickness="0"
+Cursor="Hand"/>
+   </Grid>
+    </Expander>
+
+        <DataGrid Grid.Row="2"
+     ItemsSource="{Binding Tasks}"
+    SelectedItem="{Binding SelectedTask}"
+ AutoGenerateColumns="False"
+    IsReadOnly="True"
+SelectionMode="Single"
+   GridLinesVisibility="Horizontal"
+    AlternatingRowBackground="#F8F9FA">
+    <DataGrid.Columns>
+      <DataGridTextColumn Header="Prioridad" Binding="{Binding PriorityIcon}" Width="60"/>
+      <DataGridTextColumn Header="Estado" Binding="{Binding StatusIcon}" Width="60"/>
+       <DataGridTextColumn Header="Titulo" Binding="{Binding Title}" Width="*"/>
+   <DataGridTextColumn Header="Vencimiento" Binding="{Binding DueDateDisplay}" Width="150"/>
+    <DataGridTextColumn Header="Descripcion" Binding="{Binding PriorityDescription}" Width="80"/>
+      </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

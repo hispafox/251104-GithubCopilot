@@ -29,26 +29,47 @@ namespace DemoWpf
                     services.AddDbContext<AppDbContext>(options =>
                         options.UseSqlite("Data Source=tareas.db"));
 
-                    // Registrar repositorios
+                    // Registrar repositorios existentes
                     services.AddScoped<ITareaRepository, TareaRepository>();
                     services.AddScoped<IEtiquetaRepository, EtiquetaRepository>();
 
-                    // Registrar servicios
+                    // ========== Nuevos repositorios para sistema de listas de tareas ==========
+                    services.AddScoped<ITaskRepository, TaskRepository>();
+
+                    // Registrar servicios existentes
                     services.AddScoped<ITareaService, TareaService>();
                     services.AddSingleton<IExportService, ExportService>();
 
-                    // Registrar ViewModels
+                    // ========== Nuevo servicio para sistema de listas de tareas ==========
+                    services.AddScoped<ITaskService, TaskService>();
+
+                    // Registrar ViewModels existentes
                     services.AddTransient<MainWindowViewModel>();
                     services.AddTransient<TareaListViewModel>();
                     services.AddTransient<TareaEditViewModel>();
                     services.AddSingleton<ThemeViewModel>();
                     services.AddTransient<EtiquetaManagerViewModel>();
 
-                    // Registrar ventanas
+                    // ========== Nuevos ViewModels para sistema de listas de tareas ==========
+                    services.AddTransient<TaskListManagementViewModel>();
+                    services.AddTransient<TaskListDialogViewModel>();
+                    services.AddTransient<TaskItemDialogViewModel>();
+                    services.AddTransient<TaskStatisticsViewModel>();
+                    services.AddTransient<MoveTaskDialogViewModel>();
+
+                    // Registrar ventanas existentes
                     services.AddTransient<MainWindow>();
                     services.AddTransient<TareaListWindow>();
                     services.AddTransient<TareaEditWindow>();
                     services.AddTransient<EtiquetaManagerWindow>();
+
+                    // ========== Nuevas ventanas para sistema de listas de tareas ==========
+                    services.AddTransient<TaskListDialog>();
+                    services.AddTransient<TaskItemDialog>();
+                    services.AddTransient<MoveTaskDialog>();
+                    services.AddTransient<TaskListManagementView>();
+                    services.AddTransient<TaskListDetailView>();
+                    services.AddTransient<TaskStatisticsView>();
                 })
                 .Build();
         }
@@ -57,11 +78,12 @@ namespace DemoWpf
         {
             await _host.StartAsync();
 
-            // Asegurar que la base de datos existe
+            // Asegurar que la base de datos existe y aplicar migraciones
             using (var scope = _host.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                await dbContext.Database.EnsureCreatedAsync();
+                // Usar MigrateAsync en lugar de EnsureCreatedAsync para soporte de migraciones
+                await dbContext.Database.MigrateAsync();
             }
 
             var mainWindow = _host.Services.GetRequiredService<MainWindow>();

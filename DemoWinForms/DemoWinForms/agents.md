@@ -1,79 +1,123 @@
-# Gestor de Tareas - Windows Forms Application
+# Gestor de Tareas - Windows Forms & WPF Applications
 
 ## ?? Descripción del Proyecto
 
-Aplicación de escritorio desarrollada en **Windows Forms** con **.NET 8** para la gestión de tareas personales y profesionales. Implementa una arquitectura en capas con Entity Framework Core, inyección de dependencias, y patrones modernos de desarrollo.
+Suite de aplicaciones de escritorio desarrolladas en **.NET 8** para la gestión de tareas personales y profesionales. El proyecto implementa una **arquitectura en capas compartida** con dos interfaces de usuario:
 
-## ??? Arquitectura del Proyecto
+1. **DemoWinForms** - Aplicación Windows Forms (Legacy/Producción)
+2. **DemoWpf** - Aplicación WPF con MVVM (Moderna/En desarrollo)
 
-El proyecto sigue una **arquitectura en capas** claramente definida:
+Ambas aplicaciones comparten las capas de dominio, datos y lógica de negocio a través del proyecto **DemoWinForms.Core**, implementando Entity Framework Core, inyección de dependencias y patrones modernos de desarrollo.
 
-### ?? Estructura de Carpetas
+## ??? Arquitectura de la Solución
+
+El proyecto sigue una **arquitectura en capas con núcleo compartido**:
+
+### ?? Estructura de la Solución
 
 ```
-DemoWinForms/
-??? Domain/            # Capa de Dominio
-?   ??? Entities/      # Entidades del dominio
-?   ?   ??? Tarea.cs
-?   ?   ??? Usuario.cs
-?   ?   ??? Etiqueta.cs
-?   ?   ??? TareaEtiqueta.cs
-?   ??? Enums/                # Enumeraciones
-?   ??? EstadoTarea.cs
-?       ??? PrioridadTarea.cs
+251104-GithubCopilot/DemoWinForms/
+??? DemoWinForms.Core/     # ?? NÚCLEO COMPARTIDO
+?   ??? Domain/          # Capa de Dominio
+?   ?   ??? Entities/     # Entidades del dominio
+?   ?   ?   ??? Tarea.cs
+?   ?   ?   ??? Usuario.cs
+?   ?   ?   ??? Etiqueta.cs
+?   ?   ?   ??? TareaEtiqueta.cs
+?   ?   ??? Enums/       # Enumeraciones
+?   ?       ??? EstadoTarea.cs
+?   ?  ??? PrioridadTarea.cs
+?   ?
+?   ??? Data/           # Capa de Acceso a Datos
+?   ?   ??? AppDbContext.cs
+?   ?   ??? AppDbContextFactory.cs
+?   ?   ??? Repositories/        # Patrón Repository
+?   ?       ??? ITareaRepository.cs
+?   ?       ??? TareaRepository.cs
+?   ?   ??? IEtiquetaRepository.cs
+?   ?       ??? EtiquetaRepository.cs
+?   ?
+?   ??? Business/       # Capa de Lógica de Negocio
+?   ?   ??? Services/
+?   ?   ?   ??? ITareaService.cs
+?   ?   ?   ??? TareaService.cs
+?   ?   ??? DTOs/  # Data Transfer Objects
+?   ?       ??? FiltroTareasDto.cs
+?   ?       ??? EstadisticasDto.cs
+?   ?
+?   ??? Common/   # Utilidades compartidas
+?       ??? Result.cs     # Patrón Result
+?       ??? Constants.cs
 ?
-??? Data/    # Capa de Acceso a Datos
-?   ??? AppDbContext.cs       # Contexto de Entity Framework
-?   ??? AppDbContextFactory.cs
-?   ??? Repositories/       # Patrón Repository
-?       ??? ITareaRepository.cs
-?  ??? TareaRepository.cs
-?       ??? IEtiquetaRepository.cs
-?       ??? EtiquetaRepository.cs
+??? DemoWinForms/      # ?? APLICACIÓN WINDOWS FORMS
+?   ??? Presentation/            # Capa de Presentación
+?   ?   ??? Forms/
+?   ?       ??? FormPrincipal.cs
+?   ?    ??? FormPrincipal.Designer.cs
+?   ?       ??? FormTarea.cs
+?   ?       ??? FormTarea.Designer.cs
+?   ??? Program.cs
+?   ??? appsettings.json
 ?
-??? Business/       # Capa de Lógica de Negocio
-?   ??? Services/             # Servicios de negocio
-?   ?   ??? ITareaService.cs
-?   ?   ??? TareaService.cs
-?   ??? DTOs/     # Data Transfer Objects
-?       ??? FiltroTareasDto.cs
-?       ??? EstadisticasDto.cs
+??? DemoWpf/      # ?? APLICACIÓN WPF (MVVM)
+?   ??? Views/    # Vistas XAML
+?   ?   ??? MainWindow.xaml
+?   ?   ??? TareaListWindow.xaml
+?   ?   ??? TareaEditWindow.xaml
+?   ?   ??? EtiquetaManagerWindow.xaml
+?   ?
+?   ??? ViewModels/    # ViewModels MVVM
+?   ?   ??? ViewModelBase.cs
+?   ?   ??? MainWindowViewModel.cs
+?   ?   ??? TareaListViewModel.cs
+?   ? ??? TareaEditViewModel.cs
+?   ?   ??? ThemeViewModel.cs
+?   ?   ??? EtiquetaManagerViewModel.cs
+? ?
+?   ??? Services/      # Servicios específicos de WPF
+?   ? ??? IExportService.cs
+?   ?   ??? ExportService.cs
+?   ?
+?   ??? Converters/  # Convertidores XAML
+? ?   ??? BooleanToVisibilityConverter.cs
+?   ?
+?   ??? Themes/      # Temas visuales
+?   ?   ??? LightTheme.xaml
+?   ?   ??? DarkTheme.xaml
+?   ?
+?   ??? Resources/    # Recursos compartidos
+?   ?   ??? Styles.xaml
+?   ?
+?   ??? App.xaml
+?   ??? App.xaml.cs
+?   ??? appsettings.json
 ?
-??? Presentation/      # Capa de Presentación
-?   ??? Forms/        # Formularios WinForms
-?       ??? FormPrincipal.cs
-?       ??? FormPrincipal.Designer.cs
-?       ??? FormTarea.cs
-?       ??? FormTarea.Designer.cs
-?
-??? Common/  # Utilidades compartidas
-?   ??? Result.cs   # Patrón Result para manejo de errores
-?   ??? Constants.cs          # Constantes de la aplicación
-?
-??? Migrations/   # Migraciones de EF Core
-?   ??? ...
-?
-??? Program.cs           # Punto de entrada de la aplicación
+??? Migrations/        # Migraciones de EF Core
+    ??? 20251105072136_InitialCreate.cs
+    ??? AppDbContextModelSnapshot.cs
 ```
 
 ## ?? Tecnologías y Paquetes Utilizados
 
 ### Framework Base
 - **.NET 8.0** (Windows)
-- **Windows Forms** (UI Framework)
+- **Windows Forms** (UI Framework Legacy)
+- **WPF** (Windows Presentation Foundation - Moderna)
 - **C# 12** con Nullable Reference Types habilitado
 
 ### Paquetes NuGet
 
 #### ??? Base de Datos y ORM
 - **Microsoft.EntityFrameworkCore.Sqlite** (v8.0.11)
-  - Base de datos SQLite embebida
+  - Base de datos SQLite embebida compartida
 - **Microsoft.EntityFrameworkCore.Tools** (v8.0.11)
   - Herramientas para migraciones y scaffolding
 
 #### ?? Inyección de Dependencias y Configuración
 - **Microsoft.Extensions.DependencyInjection** (v8.0.1)
   - Contenedor de IoC
+- **Microsoft.Extensions.Hosting** (v8.0.1)
+- Hosting genérico para WPF
 - **Microsoft.Extensions.Configuration** (v8.0.0)
   - Sistema de configuración
 - **Microsoft.Extensions.Configuration.Json** (v8.0.1)
@@ -88,14 +132,21 @@ DemoWinForms/
   - Escritura de logs a archivos
 - **Serilog.Extensions.Logging** (v8.0.0)
   - Integración con Microsoft.Extensions.Logging
+- **Serilog.Extensions.Hosting** (v8.0.0)
+  - Integración con Generic Host (WPF)
 
 #### ? Validación
 - **FluentValidation** (v11.9.0)
   - Validaciones fluidas y expresivas
 
-#### ?? Exportación de Datos
+#### ?? Exportación de Datos (WPF)
 - **EPPlus** (v7.5.3)
   - Generación y manipulación de archivos Excel
+
+#### ?? MVVM Toolkit (WPF)
+- **CommunityToolkit.Mvvm** (v8.3.2)
+  - Herramientas modernas para MVVM (Source Generators)
+  - ObservableProperty, RelayCommand, etc.
 
 ## ?? Modelo de Datos
 
@@ -127,8 +178,21 @@ Entidad principal del sistema que representa una tarea individual.
 #### 2. **Usuario**
 Representa el usuario que crea y gestiona tareas.
 
+**Propiedades:**
+- `Id` (int)
+- `Nombre` (string, máx. 200 caracteres)
+- `Edad` (int)
+- `Pais` (string, máx. 100 caracteres)
+- `Email` (string, máx. 255 caracteres, único)
+- `Telefono` (string, máx. 20 caracteres)
+
 #### 3. **Etiqueta**
 Sistema de etiquetado flexible para categorizar tareas.
+
+**Propiedades:**
+- `Id` (int)
+- `Nombre` (string, máx. 50 caracteres, único)
+- `ColorHex` (string, 7 caracteres, ej: "#FF5733")
 
 #### 4. **TareaEtiqueta**
 Tabla de unión para la relación many-to-many entre Tareas y Etiquetas.
@@ -136,22 +200,24 @@ Tabla de unión para la relación many-to-many entre Tareas y Etiquetas.
 ### Enumeraciones
 
 #### **EstadoTarea**
-- `Pendiente`: Tarea no iniciada
-- `EnProgreso`: Tarea en curso
-- `Completada`: Tarea finalizada
-- `Cancelada`: Tarea cancelada
+- `Pendiente` (0): Tarea no iniciada
+- `EnProgreso` (1): Tarea en curso
+- `Completada` (2): Tarea finalizada
+- `Cancelada` (3): Tarea cancelada
 
 #### **PrioridadTarea**
-- `Baja`: Prioridad baja
-- `Media`: Prioridad media (por defecto)
-- `Alta`: Prioridad alta
-- `Critica`: Prioridad crítica
+- `Baja` (0): Prioridad baja
+- `Media` (1): Prioridad media (por defecto)
+- `Alta` (2): Prioridad alta
+- `Critica` (3): Prioridad crítica
 
-## ?? Características de la Interfaz de Usuario
+## ?? DemoWinForms - Aplicación Windows Forms
 
-### FormPrincipal (Ventana Principal)
+### Características de la Interfaz de Usuario
 
-#### Funcionalidades:
+#### FormPrincipal (Ventana Principal)
+
+**Funcionalidades:**
 1. **Visualización de Tareas**
    - DataGridView con todas las tareas
    - Colores por prioridad:
@@ -172,17 +238,135 @@ Tabla de unión para la relación many-to-many entre Tareas y Etiquetas.
    - ? Crear nueva tarea
    - ?? Editar tarea seleccionada (doble clic o botón)
    - ??? Eliminar tarea con confirmación
-   - ? Marcar como completada
+   - ?? Marcar como completada
    - ?? Refrescar listado
 
 4. **Barra de Estado**
    - Contador de tareas
    - Mensaje de estado de operaciones
 
-### FormTarea (Formulario de Edición)
+#### FormTarea (Formulario de Edición)
 - Formulario modal para crear/editar tareas
 - Campos para todos los atributos de la tarea
 - Validaciones integradas
+
+## ?? DemoWpf - Aplicación WPF con MVVM
+
+### Patrón MVVM Implementado
+
+#### ViewModels Principales
+
+##### 1. **MainWindowViewModel**
+Gestiona la ventana principal y estadísticas.
+
+**Propiedades:**
+- `Estadisticas` (EstadisticasDto)
+- `IsLoading` (bool)
+
+**Comandos:**
+- `LoadEstadisticasCommand` (IAsyncRelayCommand)
+- `OpenTareasCommand` (IRelayCommand)
+- `OpenNewTareaCommand` (IRelayCommand)
+
+**Eventos:**
+- `OpenTareasRequested`
+- `OpenNewTareaRequested`
+
+##### 2. **TareaListViewModel**
+Lista y filtrado de tareas.
+
+**Propiedades:**
+- `Tareas` (ObservableCollection<Tarea>)
+- `TareaSeleccionada` (Tarea?)
+- `FiltroPendiente`, `FiltroEnProgreso`, `FiltroCompletada`, `FiltroCancelada` (bool)
+- `PrioridadSeleccionada` (PrioridadTarea?)
+- `CategoriaSeleccionada` (string?)
+- `TextoBusqueda` (string)
+- `MensajeEstado` (string)
+
+**Comandos:**
+- `LoadTareasCommand`
+- `NewTareaCommand`
+- `EditTareaCommand` (CanExecute según selección)
+- `DeleteTareaCommand` (CanExecute según selección)
+- `CompleteTareaCommand` (CanExecute según estado)
+- `ExportCsvCommand`
+- `ExportJsonCommand`
+
+**Eventos:**
+- `EditTareaRequested`
+- `NewTareaRequested`
+
+##### 3. **TareaEditViewModel**
+Creación y edición de tareas.
+
+**Propiedades:**
+- `Tarea` (Tarea)
+- Propiedades individuales editables
+- `IsEditMode` (bool)
+- `ValidationErrors` (ObservableCollection<string>)
+
+**Comandos:**
+- `SaveCommand`
+- `CancelCommand`
+
+##### 4. **ThemeViewModel**
+Gestión de temas claro/oscuro.
+
+**Propiedades:**
+- `IsDarkMode` (bool)
+
+**Comandos:**
+- `ToggleThemeCommand`
+
+**Características:**
+- Persistencia en `Settings.settings`
+- Aplicación dinámica de ResourceDictionary
+- Soporte para `LightTheme.xaml` y `DarkTheme.xaml`
+
+##### 5. **EtiquetaManagerViewModel**
+Gestión CRUD de etiquetas.
+
+**Propiedades:**
+- `Etiquetas` (ObservableCollection<Etiqueta>)
+- `EtiquetaSeleccionada` (Etiqueta?)
+- `NuevaEtiquetaNombre`, `NuevaEtiquetaColor` (string)
+
+**Comandos:**
+- `LoadEtiquetasCommand`
+- `AddEtiquetaCommand`
+- `EditEtiquetaCommand`
+- `DeleteEtiquetaCommand`
+
+### Características Avanzadas WPF
+
+#### 1. **Servicios Específicos**
+
+##### IExportService / ExportService
+Exportación de datos a diferentes formatos:
+- **CSV**: Exportación con escape de caracteres especiales
+- **JSON**: Serialización con JsonSerializer
+- Encoding UTF-8 con BOM
+
+#### 2. **Temas Visuales**
+- **LightTheme.xaml**: Tema claro con paleta de colores suaves
+- **DarkTheme.xaml**: Tema oscuro con contraste optimizado
+- Cambio dinámico sin reiniciar la aplicación
+
+#### 3. **Converters XAML**
+- `BooleanToVisibilityConverter`: Conversión Bool ? Visibility
+- Soporte para inversión (`ConverterParameter="Inverse"`)
+
+#### 4. **Data Binding Avanzado**
+- `UpdateSourceTrigger=PropertyChanged` para búsqueda en tiempo real
+- `INotifyPropertyChanged` automático con `[ObservableProperty]`
+- Command binding con `CanExecute` dinámico
+
+#### 5. **Source Generators**
+Uso de **CommunityToolkit.Mvvm** para generar código:
+- `[ObservableProperty]` ? Genera propiedades con INotifyPropertyChanged
+- `[RelayCommand]` ? Genera comandos ICommand
+- `[NotifyCanExecuteChangedFor]` ? Actualiza CanExecute automáticamente
 
 ## ?? Patrones y Principios Aplicados
 
@@ -198,16 +382,22 @@ Tabla de unión para la relación many-to-many entre Tareas y Etiquetas.
    - Separación clara entre UI y lógica de negocio
 
 3. **Dependency Injection (DI)**
-   - Configurado en `Program.cs`
+   - Configurado en `Program.cs` (WinForms) y `App.xaml.cs` (WPF)
    - Registro de servicios, repositorios y contextos
-   - Formularios registrados como Transient
+   - Formularios/ViewModels/Views registrados como Transient/Scoped/Singleton
 
 4. **Result Pattern**
    - Manejo de errores sin excepciones
    - Clase `Result<T>` en la capa Common
    - Proporciona `IsSuccess`, `Value`, `Error`
 
-5. **DTO Pattern**
+5. **MVVM Pattern** (WPF)
+   - Separación completa View-ViewModel-Model
+   - Data binding bidireccional
+   - Commands para lógica de interacción
+   - ViewModelBase con INotifyPropertyChanged
+
+6. **DTO Pattern**
    - `FiltroTareasDto`: Encapsula criterios de filtrado
    - `EstadisticasDto`: Datos agregados de tareas
    - Separación entre entidades de dominio y modelos de transferencia
@@ -224,18 +414,24 @@ Tabla de unión para la relación many-to-many entre Tareas y Etiquetas.
 
 ### Proveedor
 - **SQLite** (archivo local `tareas.db`)
-- Ubicación: Directorio del proyecto
+- Ubicación: Directorio del proyecto (compartida entre aplicaciones)
+- Mismo esquema para WinForms y WPF
 
 ### Estrategia de Migraciones
 - **Code-First** con Entity Framework Core
 - Migraciones automáticas al iniciar la aplicación
-- Comando: `context.Database.Migrate()` en `Program.cs`
+- Comando: `context.Database.MigrateAsync()` en ambas apps
 
 ### Configuración
 ```csharp
 services.AddDbContext<AppDbContext>(options =>
- options.UseSqlite($"Data Source={dbPath}"));
+    options.UseSqlite($"Data Source={dbPath}"));
 ```
+
+### Datos Iniciales (Seed)
+- Usuario demo: `demo@tareas.com`
+- Tarea de ejemplo: "Bienvenido al Gestor de Tareas"
+- 5 etiquetas predefinidas: Urgente, Proyecto, Personal, Trabajo, Importante
 
 ## ?? Logging
 
@@ -255,19 +451,19 @@ _logger.LogInformation("Formulario principal cargado correctamente");
 _logger.LogError(ex, "Error al cargar tareas");
 ```
 
-## ?? Configuración de la Aplicación
+## ?? Configuración de las Aplicaciones
 
 ### appsettings.json
-Archivo de configuración para parámetros de la aplicación:
+Archivo de configuración compartido para:
 - Cadenas de conexión
 - Configuración de logging
 - Parámetros personalizados
 
-### Características de Program.cs
+### Características de Program.cs (WinForms)
 
 1. **Configuración de Servicios**
    ```csharp
-ServiceProvider = services.BuildServiceProvider();
+   ServiceProvider = services.BuildServiceProvider();
    ```
 
 2. **Inicialización de Base de Datos**
@@ -279,7 +475,28 @@ ServiceProvider = services.BuildServiceProvider();
    - Logging de excepciones fatales
    - MessageBox para errores críticos
 
+### Características de App.xaml.cs (WPF)
+
+1. **Generic Host Pattern**
+```csharp
+   _host = Host.CreateDefaultBuilder()
+       .ConfigureServices(...)
+       .UseSerilog()
+   .Build();
+   ```
+
+2. **Lifecycle Hooks**
+   - `OnStartup`: Aplicar migraciones, mostrar ventana
+   - `OnExit`: Liberar recursos, flush logs
+
+3. **Service Provider Global**
+   ```csharp
+   public static IServiceProvider Services => ((App)Current)._host.Services;
+   ```
+
 ## ?? Flujo de Ejecución
+
+### Windows Forms (DemoWinForms)
 
 1. **Inicio de Aplicación**
    - Configuración de Serilog
@@ -302,34 +519,73 @@ ServiceProvider = services.BuildServiceProvider();
    - Flush de logs
    - Liberación de recursos
 
+### WPF (DemoWpf)
+
+1. **Inicio de Aplicación**
+   - Configuración de Generic Host
+   - Configuración de Serilog
+   - Registro de servicios, ViewModels y Views
+   - Aplicación de migraciones
+   - Carga de tema guardado
+
+2. **MainWindow**
+   - Carga de estadísticas
+   - Navegación a ventanas secundarias
+   - Gestión de eventos de ViewModels
+
+3. **TareaListWindow**
+   - Binding de TareaListViewModel
+   - Carga asíncrona de tareas
+   - Filtrado reactivo con debounce
+   - Exportación CSV/JSON
+
+4. **TareaEditWindow**
+   - Modo creación/edición
+   - Validación en tiempo real
+   - Guardado con Result Pattern
+
 ## ?? Características Avanzadas
 
 ### 1. Búsqueda con Debounce
 - Evita búsquedas excesivas mientras el usuario escribe
 - Timer de 500ms antes de ejecutar la búsqueda
+- Implementado en ambas aplicaciones
 
 ### 2. Formateo Visual Dinámico
-- Colores según prioridad
-- Estilo tachado para completadas
-- Resaltado de tareas vencidas
+- **WinForms**: DataGridView con estilos condicionales
+- **WPF**: DataTriggers en DataGrid.RowStyle
+- Colores según prioridad, estilo tachado para completadas
 
 ### 3. Filtros Múltiples Combinados
 - Aplicación simultánea de múltiples criterios
 - Estado + Prioridad + Categoría + Texto
+- Consultas optimizadas con LINQ
 
 ### 4. Validaciones
-- FluentValidation para reglas de negocio
-- Validaciones de Data Annotations en entidades
+- FluentValidation para reglas de negocio (Core)
+- Data Annotations en entidades
+- Validación en ViewModel (WPF)
 
 ### 5. Soft Delete
 - Eliminación lógica mediante `EliminadoLogico`
 - Permite recuperación de datos
+- Filtrado automático en consultas
+
+### 6. Exportación de Datos (WPF)
+- CSV con escape de caracteres especiales
+- JSON con formato legible (WriteIndented)
+- SaveFileDialog para selección de destino
+
+### 7. Temas Dinámicos (WPF)
+- Cambio entre claro/oscuro sin reiniciar
+- Persistencia de preferencia del usuario
+- Aplicación global con ResourceDictionary
 
 ## ?? DTOs Utilizados
 
 ### FiltroTareasDto
 ```csharp
-- Estado?: EstadoTarea?
+- Estados?: List<EstadoTarea>
 - Prioridad?: PrioridadTarea?
 - Categoria?: string
 - BusquedaTexto?: string
@@ -338,17 +594,28 @@ ServiceProvider = services.BuildServiceProvider();
 ```
 
 ### EstadisticasDto
-Proporciona métricas y estadísticas sobre las tareas.
+```csharp
+- TotalTareas: int
+- TareasPendientes: int
+- TareasEnProgreso: int
+- TareasCompletadas: int
+- TareasCanceladas: int
+- ProximasVencer: int
+- TareasPorPrioridad: Dictionary<PrioridadTarea, int>
+- TareasPorCategoria: Dictionary<string, int>
+```
 
-## ?? Mejores Prácticas Implementadas
+## ? Mejores Prácticas Implementadas
 
 1. **Separación de Responsabilidades**
    - UI separada de la lógica de negocio
    - Lógica de negocio separada del acceso a datos
+   - Core compartido entre múltiples interfaces
 
 2. **Programación Asíncrona**
    - Operaciones async/await para no bloquear la UI
    - Mejor experiencia de usuario
+   - Task-based asynchronous pattern
 
 3. **Manejo de Errores Robusto**
    - Pattern Result para operaciones
@@ -364,34 +631,46 @@ Proporciona métricas y estadísticas sobre las tareas.
    - Nullable Reference Types habilitado
    - ImplicitUsings para simplificar código
    - Documentación XML en clases principales
+   - File-scoped namespaces (C# 10+)
 
-## ?? Comandos Útiles
+6. **Source Generators** (WPF)
+   - Reduce boilerplate code
+   - Mejor rendimiento en compilación
+   - Menos errores humanos
+
+## ??? Comandos Útiles
 
 ### Entity Framework Core
 ```bash
 # Crear nueva migración
-dotnet ef migrations add NombreMigracion
+dotnet ef migrations add NombreMigracion --project DemoWinForms.Core
 
 # Aplicar migraciones
-dotnet ef database update
+dotnet ef database update --project DemoWinForms
 
 # Revertir migración
-dotnet ef database update MigracionAnterior
+dotnet ef database update MigracionAnterior --project DemoWinForms
 
 # Eliminar última migración
-dotnet ef migrations remove
+dotnet ef migrations remove --project DemoWinForms.Core
 ```
 
 ### Compilación y Ejecución
 ```bash
-# Compilar
+# Compilar solución completa
 dotnet build
 
-# Ejecutar
-dotnet run
+# Ejecutar WinForms
+dotnet run --project DemoWinForms
 
-# Publicar
-dotnet publish -c Release
+# Ejecutar WPF
+dotnet run --project DemoWpf
+
+# Publicar WinForms
+dotnet publish DemoWinForms -c Release -o ./publish/winforms
+
+# Publicar WPF
+dotnet publish DemoWpf -c Release -o ./publish/wpf
 ```
 
 ## ?? Conceptos de Aprendizaje
@@ -399,36 +678,79 @@ dotnet publish -c Release
 Este proyecto es ideal para aprender:
 
 - ? Windows Forms moderno con .NET 8
+- ? WPF con MVVM y Community Toolkit
 - ? Entity Framework Core con SQLite
-- ? Arquitectura en capas
+- ? Arquitectura en capas compartida
 - ? Dependency Injection en aplicaciones desktop
 - ? Patrones Repository y Service Layer
 - ? Logging con Serilog
-- ? Programación asíncrona en WinForms
+- ? Programación asíncrona en WinForms y WPF
 - ? Validaciones con FluentValidation
 - ? LINQ y expresiones lambda
 - ? Manejo de estado y filtros complejos
+- ? Source Generators con CommunityToolkit.Mvvm
+- ? Data Binding y Commands en WPF
+- ? Temas dinámicos y estilos XAML
+- ? Exportación de datos (CSV, JSON)
 
 ## ?? Posibles Extensiones Futuras
 
-1. **Exportación a Excel** (EPPlus ya está incluido)
-2. **Notificaciones de tareas vencidas**
-3. **Sistema de recordatorios**
-4. **Gráficos y estadísticas visuales**
-5. **Sincronización en la nube**
-6. **Trabajo con múltiples usuarios**
-7. **Sistema de adjuntos de archivos**
-8. **Integración con calendario**
-9. **Temas y personalización de UI**
-10. **Reportes personalizados**
+1. **Exportación a Excel** (EPPlus ya está incluido en WPF)
+2. **Notificaciones de tareas vencidas** (Windows ToastNotifications)
+3. **Sistema de recordatorios** con timers
+4. **Gráficos y estadísticas visuales** (LiveCharts o OxyPlot)
+5. **Sincronización en la nube** (Azure Storage o SQL Azure)
+6. **Trabajo con múltiples usuarios** (autenticación y autorización)
+7. **Sistema de adjuntos de archivos** (blob storage)
+8. **Integración con calendario** (Outlook, Google Calendar)
+9. **Temas personalizados** (editor de colores)
+10. **Reportes personalizados** con Crystal Reports o FastReport
+11. **Aplicación móvil** con .NET MAUI compartiendo el Core
+12. **API REST** con ASP.NET Core Web API
+
+## ?? Comparación WinForms vs WPF
+
+| Característica | WinForms | WPF |
+|----------------|----------|-----|
+| Patrón de diseño | Code-behind | MVVM |
+| Data Binding | Manual (eventos) | Bidireccional automático |
+| Estilos | Limitado | Totalmente personalizable |
+| Temas | No nativo | ResourceDictionary |
+| Animaciones | No soportado | Sí, con Storyboards |
+| Rendimiento | Bueno | Excelente (aceleración GPU) |
+| Curva de aprendizaje | Baja | Media-Alta |
+| Legacy | Sí | Tecnología actual |
+| Comunidad | Estable | Activa y creciente |
+
+## ?? Estado del Proyecto
+
+- **DemoWinForms**: ? Funcional y completo
+- **DemoWinForms.Core**: ? Estable y compartido
+- **DemoWpf**: ? Funcional con todas las características principales
+- **Migraciones**: ? Aplicadas y funcionando
+- **Documentación**: ? Actualizada
+
+### Funcionalidades Implementadas en WPF
+
+- ? Ventana principal con estadísticas
+- ? Lista de tareas con filtros avanzados
+- ? Creación y edición de tareas
+- ? Gestión de etiquetas
+- ? Temas claro/oscuro
+- ? Exportación CSV/JSON
+- ? Logging con Serilog
+- ? Validaciones en ViewModel
+- ? Comandos con CanExecute
+- ? Búsqueda con debounce
 
 ## ?? Información de Contacto
 
-Aplicación desarrollada como proyecto de demostración de buenas prácticas en Windows Forms con .NET 8.
+Aplicación desarrollada como proyecto de demostración de buenas prácticas en Windows Forms y WPF con .NET 8, implementando arquitectura compartida y patrones modernos.
 
 ---
 
-**Versión:** 1.0  
+**Versión:** 2.0  
 **Framework:** .NET 8.0 (Windows)  
-**Fecha de creación:** 2024  
-**Licencia:** © 2024
+**Última actualización:** Noviembre 2025  
+**Repositorio:** https://github.com/hispafox/251104-GithubCopilot  
+**Licencia:** © 2024-2025

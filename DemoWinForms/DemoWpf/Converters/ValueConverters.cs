@@ -26,6 +26,86 @@ throw new NotImplementedException();
   }
 
     /// <summary>
+    /// Convierte bool inverso a Visibility
+    /// </summary>
+    public class InverseBoolToVisibilityConverter : IValueConverter
+  {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+  {
+     if (value is bool boolValue)
+  {
+    return boolValue ? Visibility.Collapsed : Visibility.Visible;
+}
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+        throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Convierte string vacío a Visibility.Collapsed
+    /// </summary>
+    public class StringToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+     if (value is string str)
+      {
+   return string.IsNullOrWhiteSpace(str) ? Visibility.Collapsed : Visibility.Visible;
+ }
+            return Visibility.Collapsed;
+ }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Convierte null a Visibility.Visible (para mostrar mensaje cuando no hay selección)
+    /// </summary>
+    public class NullToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value == null ? Visibility.Visible : Visibility.Collapsed;
+   }
+
+     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Invierte un valor booleano
+    /// </summary>
+    public class InverseBooleanConverter : IValueConverter
+    {
+  public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+        if (value is bool boolValue)
+            {
+     return !boolValue;
+  }
+            return true;
+}
+
+     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolValue)
+            {
+     return !boolValue;
+     }
+          return false;
+ }
+    }
+
+    /// <summary>
     /// Convierte el modo de edición al título correspondiente
     /// </summary>
   public class EditModeTitleConverter : IValueConverter

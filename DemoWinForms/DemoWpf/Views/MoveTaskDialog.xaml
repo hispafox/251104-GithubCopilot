@@ -1,0 +1,153 @@
+<Window x:Class="DemoWpf.Views.MoveTaskDialog"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+xmlns:vm="clr-namespace:DemoWpf.ViewModels"
+d:DataContext="{d:DesignInstance Type=vm:MoveTaskDialogViewModel}"
+ mc:Ignorable="d"
+        Title="Mover Tarea a Otra Lista"
+        Height="350" Width="450"
+      WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+  WindowStyle="SingleBorderWindow">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+   <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+       <RowDefinition Height="*"/>
+    <RowDefinition Height="Auto"/>
+       <RowDefinition Height="Auto"/>
+</Grid.RowDefinitions>
+
+     <TextBlock Grid.Row="0" 
+      Text="Selecciona la lista de destino"
+        FontSize="16"
+      FontWeight="SemiBold"
+     Margin="0,0,0,10"/>
+
+   <Border Grid.Row="1" 
+       Background="#E3F2FD"
+     Padding="15"
+ Margin="0,0,0,15"
+BorderBrush="#2196F3"
+       BorderThickness="1"
+  CornerRadius="5">
+      <StackPanel>
+    <TextBlock Text="Tarea a mover:" 
+     FontSize="12" 
+    Foreground="Gray"
+Margin="0,0,0,5"/>
+<TextBlock Text="{Binding TaskTitle}" 
+         FontSize="14" 
+FontWeight="SemiBold"
+     TextWrapping="Wrap"/>
+   </StackPanel>
+</Border>
+
+   <Border Grid.Row="2" 
+ BorderBrush="#E0E0E0"
+  BorderThickness="1"
+       CornerRadius="5"
+  Margin="0,0,0,15">
+      <ListBox ItemsSource="{Binding AvailableLists}"
+    SelectedItem="{Binding SelectedList}"
+     BorderThickness="0">
+       <ListBox.ItemTemplate>
+        <DataTemplate>
+            <Border Background="White"
+        Padding="15,10"
+     Margin="5"
+      BorderBrush="{Binding ColorCode}"
+        BorderThickness="3"
+CornerRadius="5"
+           Cursor="Hand">
+    <Border.Style>
+    <Style TargetType="Border">
+        <Style.Triggers>
+           <Trigger Property="IsMouseOver" Value="True">
+  <Setter Property="Background" Value="#F5F5F5"/>
+      </Trigger>
+      </Style.Triggers>
+  </Style>
+          </Border.Style>
+       <Grid>
+<Grid.ColumnDefinitions>
+    <ColumnDefinition Width="*"/>
+     <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+ <StackPanel Grid.Column="0">
+      <TextBlock Text="{Binding Name}" 
+     FontWeight="SemiBold"
+       FontSize="14"/>
+       <TextBlock Text="{Binding Description}" 
+FontSize="12" 
+          Foreground="Gray"
+         TextWrapping="Wrap"
+    Visibility="{Binding Description, Converter={StaticResource StringToVisibilityConverter}}"/>
+   </StackPanel>
+
+ <StackPanel Grid.Column="1" 
+   VerticalAlignment="Center"
+     Margin="10,0,0,0">
+    <TextBlock Text="{Binding TaskCount}" 
+        FontSize="20" 
+    FontWeight="Bold"
+     HorizontalAlignment="Center"/>
+<TextBlock Text="tareas" 
+       FontSize="10" 
+       HorizontalAlignment="Center"
+        Foreground="Gray"/>
+         </StackPanel>
+    </Grid>
+       </Border>
+       </DataTemplate>
+  </ListBox.ItemTemplate>
+      </ListBox>
+        </Border>
+
+   <TextBlock Grid.Row="3"
+  Text="{Binding ValidationMessage}"
+Foreground="Red"
+  FontWeight="SemiBold"
+   Margin="0,0,0,10"
+  TextWrapping="Wrap"
+ Visibility="{Binding ValidationMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+
+   <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+ <Button Content="Cancelar"
+   Command="{Binding CancelCommand}"
+       CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+     Width="100"
+   Height="35"
+   Margin="0,0,10,0"
+     Background="#95A5A6"
+ Foreground="White"
+  BorderThickness="0"
+        Cursor="Hand"/>
+  <Button Content="Mover"
+           Command="{Binding MoveCommand}"
+    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+      Width="100"
+   Height="35"
+   Background="#4CAF50"
+     Foreground="White"
+      BorderThickness="0"
+       Cursor="Hand"/>
+    </StackPanel>
+
+        <Grid Grid.Row="0" Grid.RowSpan="5"
+            Background="#80000000"
+ Visibility="{Binding IsMoving, Converter={StaticResource BooleanToVisibilityConverter}}">
+ <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+  <TextBlock Text="Moviendo tarea..." 
+   Foreground="White"
+      FontSize="18"
+      FontWeight="SemiBold"
+HorizontalAlignment="Center"/>
+  </StackPanel>
+   </Grid>
+    </Grid>
+</Window>

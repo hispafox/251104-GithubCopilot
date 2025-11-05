@@ -18,10 +18,14 @@ public class AppDbContext : DbContext
     public DbSet<Tarea> Tareas => Set<Tarea>();
     public DbSet<Etiqueta> Etiquetas => Set<Etiqueta>();
     public DbSet<TareaEtiqueta> TareasEtiquetas => Set<TareaEtiqueta>();
+    
+  // ========== Nuevas entidades para el sistema de listas de tareas ==========/
+    public DbSet<TaskList> TaskLists => Set<TaskList>();
+    public DbSet<TaskItem> TaskItems => Set<TaskItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-{
-      base.OnModelCreating(modelBuilder);
+    {
+  base.OnModelCreating(modelBuilder);
 
         // Configuración de Usuario
    modelBuilder.Entity<Usuario>(entity =>
@@ -138,8 +142,68 @@ entity.Property(e => e.Pais)
  .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // Datos semilla
-        SeedData(modelBuilder);
+        // ========== Configuración de TaskList ==========/
+    modelBuilder.Entity<TaskList>(entity =>
+  {
+       entity.ToTable("TaskLists");
+    entity.HasKey(e => e.Id);
+
+         entity.Property(e => e.Name)
+    .IsRequired()
+    .HasMaxLength(100);
+
+            entity.Property(e => e.Description)
+    .HasMaxLength(500);
+
+         entity.Property(e => e.ColorCode)
+ .HasMaxLength(7);
+
+     entity.Property(e => e.CreatedAt)
+   .IsRequired();
+
+   // Índice para mejorar búsquedas por nombre
+       entity.HasIndex(e => e.Name);
+        });
+
+   // ========== Configuración de TaskItem ==========/
+  modelBuilder.Entity<TaskItem>(entity =>
+        {
+            entity.ToTable("TaskItems");
+    entity.HasKey(e => e.Id);
+
+   entity.Property(e => e.Title)
+    .IsRequired()
+         .HasMaxLength(200);
+
+entity.Property(e => e.Description)
+                .HasMaxLength(1000);
+
+   entity.Property(e => e.Priority)
+     .IsRequired()
+                .HasConversion<int>();
+
+ entity.Property(e => e.Status)
+          .IsRequired()
+     .HasConversion<int>();
+
+            entity.Property(e => e.CreatedAt)
+      .IsRequired();
+
+   // Relación TaskItem -> TaskList (muchos a uno)
+          entity.HasOne(e => e.TaskList)
+   .WithMany(tl => tl.Tasks)
+    .HasForeignKey(e => e.TaskListId)
+          .OnDelete(DeleteBehavior.Cascade); // Eliminar tareas al eliminar lista
+
+            // Índices para mejorar rendimiento
+        entity.HasIndex(e => e.TaskListId);
+            entity.HasIndex(e => e.Status);
+     entity.HasIndex(e => e.Priority);
+            entity.HasIndex(e => e.DueDate);
+        });
+
+   // Datos semilla
+    SeedData(modelBuilder);
     }
 
     private void SeedData(ModelBuilder modelBuilder)
